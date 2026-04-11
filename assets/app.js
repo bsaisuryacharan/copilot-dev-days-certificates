@@ -34,7 +34,7 @@ async function init() {
     }
   } catch (err) {
     console.error('[App] init error:', err);
-    showView('error-view');
+    showError(id);
   }
 }
 
@@ -70,6 +70,119 @@ function validateAttendee(attendee) {
       throw new Error('Attendee data is missing required field: ' + required[i]);
     }
   }
+}
+
+// === Certificate Renderer ===
+
+/**
+ * Set an image src gracefully — hides the element if src is empty or the image 404s.
+ * IMPORTANT: onerror must be assigned before src to catch immediate failures.
+ */
+function setImageGraceful(id, src) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  if (!src) {
+    el.style.display = 'none';
+    return;
+  }
+  el.onerror = function () {
+    this.style.display = 'none';
+  };
+  el.src = src;
+}
+
+/**
+ * Populate all certificate HTML slots from config and attendee data.
+ * Requires all cert-* IDs to exist in index.html (created by plan 02-01).
+ */
+function renderCertificateView(config, attendee) {
+  // Org header
+  var orgNameEl = document.getElementById('cert-org-name');
+  if (orgNameEl) orgNameEl.textContent = config.org_name || '';
+
+  setImageGraceful('cert-logo', config.logo_url);
+  var logoEl = document.getElementById('cert-logo');
+  if (logoEl && config.org_name) logoEl.alt = config.org_name;
+
+  // Title block
+  var headingEl = document.getElementById('cert-heading-label');
+  if (headingEl) headingEl.textContent = config.certificate_title || 'Certificate';
+
+  // Body: text labels
+  var preNameEl = document.getElementById('cert-pre-name-text');
+  if (preNameEl) preNameEl.textContent = config.pre_name_text || '';
+
+  var nameEl = document.getElementById('cert-name');
+  if (nameEl) nameEl.textContent = attendee.name;
+
+  var postNameEl = document.getElementById('cert-post-name-text');
+  if (postNameEl) postNameEl.textContent = config.post_name_text || '';
+
+  var workshopEl = document.getElementById('cert-workshop');
+  if (workshopEl) workshopEl.textContent = attendee.workshop;
+
+  // Description: show only when config.show_description is truthy AND attendee has description
+  var descEl = document.getElementById('cert-description');
+  if (descEl) {
+    if (config.show_description && attendee.description) {
+      descEl.textContent = attendee.description;
+      descEl.classList.remove('hidden');
+    } else {
+      descEl.classList.add('hidden');
+    }
+  }
+
+  // Footer: date
+  var dateEl = document.getElementById('cert-date');
+  if (dateEl) {
+    dateEl.textContent = attendee.date;
+    dateEl.setAttribute('datetime', attendee.date_iso);
+  }
+
+  var dateLabelEl = document.getElementById('cert-date-label');
+  if (dateLabelEl) dateLabelEl.textContent = config.date_label || '';
+
+  // Footer: seal (hidden if show_seal === false or seal_url missing)
+  if (config.show_seal === false) {
+    var sealEl = document.getElementById('cert-seal');
+    if (sealEl) sealEl.style.display = 'none';
+  } else {
+    setImageGraceful('cert-seal', config.seal_url);
+  }
+
+  // Footer: signature
+  setImageGraceful('cert-signature', config.signature_url);
+
+  var authorizedNameEl = document.getElementById('cert-authorized-name');
+  if (authorizedNameEl) authorizedNameEl.textContent = config.signature_name || '';
+
+  var sigLabelEl = document.getElementById('cert-sig-label');
+  if (sigLabelEl) sigLabelEl.textContent = config.issued_by_label || '';
+
+  // Bottom row: certificate ID
+  var idLabelEl = document.getElementById('cert-id-label');
+  if (idLabelEl) {
+    var prefix = config.id_label || 'Certificate ID';
+    idLabelEl.textContent = prefix + ': ' + attendee.certificate_id;
+  }
+}
+
+/**
+ * Show the error view with an optional certificate-ID-specific message.
+ * When id is falsy (config load failed), the hardcoded HTML message is preserved.
+ * When id is truthy (certificate not found), updates #error-message and populates #error-detail.
+ */
+function showError(id) {
+  var msgEl = document.getElementById('error-message');
+  var detailEl = document.getElementById('error-detail');
+  if (id && msgEl) {
+    msgEl.textContent = 'Certificate not found.';
+    if (detailEl) {
+      detailEl.textContent = 'We could not find a certificate for: ' + id;
+      detailEl.classList.remove('hidden');
+    }
+  }
+  showView('error-view');
 }
 
 // === CSS Variable Injection ===
