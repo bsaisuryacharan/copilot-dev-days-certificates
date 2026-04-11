@@ -1,0 +1,48 @@
+{
+  "org_name": "Acme Workshop Co.",
+  "org_tagline": "Learn. Build. Grow.",
+  "org_website": "https://example.com",
+  "logo_url": "assets/images/logo.png",
+
+  "primary_color": "#1a2e4a",
+  "secondary_color": "#c8a951",
+  "background_color": "#ffffff",
+  "text_color": "#333333",
+  "muted_color": "#777777",
+  "border_color": "#c8a951",
+  "border_width": "7px",
+
+  "seal_url": "assets/images/seal.png",
+  "signature_url": "assets/images/signature.png",
+  "font_heading": "'Playfair Display', Georgia, serif",
+  "font_body": "'Lato', 'Helvetica Neue', sans-serif",
+
+  "certificate_title": "Certificate of Completion",
+  "pre_name_text": "This is to certify that",
+  "post_name_text": "has successfully completed the workshop",
+  "issued_by_label": "Authorized By",
+  "date_label": "Date of Completion",
+  "id_label": "Certificate ID",
+  "signature_name": "Dr. Jane Smith",
+  "signature_title": "Workshop Director",
+
+  "show_qr": true,
+  "show_description": true,
+  "show_seal": true,
+
+  "search_headline": "Verify Your Certificate",
+  "search_subtext": "Enter the email address you used to register.",
+  "search_placeholder": "your@email.com",
+  "search_button": "Find My Certificate",
+  "search_footer_note": "Can't find yours? Contact us at hello@example.com",
+
+  "pdf_filename_prefix": "certificate",
+  "pdf_format": "a4",
+  "pdf_orientation": "landscape",
+  "pdf_margin": 0,
+
+  "site_title": "Workshop Certificates — Acme Workshop Co.",
+  "og_image_url": "assets/images/og-default.png",
+  "twitter_handle": "@acmeworkshops",
+  "template_version": "1.0.0"
+}
