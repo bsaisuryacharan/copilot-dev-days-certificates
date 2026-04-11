@@ -3,7 +3,33 @@
 document.addEventListener('DOMContentLoaded', init);
 
 async function init() {
-  // Bootstrap sequence — implemented in plan 01-04
+  showView('loading-view');
+
+  const rawId = getQueryParam('id');
+  const id = rawId ? sanitizeId(rawId) : null;
+
+  try {
+    const config = await fetchConfig();
+    validateConfig(config);
+    applyConfigVars(config);
+
+    if (config.site_title) {
+      document.title = config.site_title;
+    }
+
+    if (id) {
+      // Phase 02 will fetch attendee data and render the certificate view
+      // fetchAttendee(id) + renderCertificateView(config, attendee) — not yet implemented
+      showView('certificate-view');
+    } else {
+      // Phase 04 will render the search landing page
+      // renderSearchView(config) — not yet implemented
+      showView('search-view');
+    }
+  } catch (err) {
+    console.error('[App] init error:', err);
+    showView('error-view');
+  }
 }
 
 // === Config Loader ===
